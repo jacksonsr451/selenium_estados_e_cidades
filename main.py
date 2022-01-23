@@ -40,14 +40,13 @@ for element in table_row_states_with_sigle:
 
 # list states and cities by wikipedia
 driver.get(url=url_states_and_cities)
-
 table_row_states_and_cities: [] = list()
 
-for row in range(1, 27):
+for row in range(1, 26):
     table_of_states_and_cities = driver.find_element(By.XPATH, '//*[@id="mw-content-text"]/div[1]/table[3]/tbody')
 
-    tr_table_states_and_cities = table_of_states_and_cities.find_element(By.CSS_SELECTOR,
-                                            f'#mw-content-text > div.mw-parser-output > table:nth-child(11) > tbody > tr:nth-child({row})')
+    tr_table_states_and_cities = table_of_states_and_cities.find_element(By.XPATH,
+                                            f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]')
     save_td_data: {} = {
         "posicao": "",
         "estado": "",
@@ -57,51 +56,63 @@ for row in range(1, 27):
         "habitantes_por_estado": "",
         "habitantes_por_municipio": ""
     }
-    sleep(2)
-
-    save_td_data["posicao"] = tr_table_states_and_cities.find_element(By.TAG_NAME,
-                                                                      f'#mw-content-text > div.mw-parser-output > table:nth-child(11) > tbody > tr:nth-child({row}) > td:nth-child(1)').text
-    save_td_data["estado"] = tr_table_states_and_cities.find_element(By.TAG_NAME,
-                                                                      f'#mw-content-text > div.mw-parser-output > table:nth-child(11) > tbody > tr:nth-child({row}) > td:nth-child(2)').text
+    save_td_data["posicao"] = tr_table_states_and_cities.find_element(By.XPATH,
+                                                                      f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[1]').text
+    save_td_data["estado"] = tr_table_states_and_cities.find_element(By.XPATH,
+                                                                      f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[2]').text
     for item in list_of_states_names:
         if save_td_data['estado'].__contains__(item['estado']):
             save_td_data['sigla'] = item['sigla']
 
-    save_td_data["regiao"] = tr_table_states_and_cities.find_element(By.TAG_NAME,
-                                                                      f'#mw-content-text > div.mw-parser-output > table:nth-child(11) > tbody > tr:nth-child({row}) > td:nth-child(3)').text
-    save_td_data["habitantes_por_estado"] = tr_table_states_and_cities.find_element(By.TAG_NAME,
-                                                                      f'#mw-content-text > div.mw-parser-output > table:nth-child(11) > tbody > tr:nth-child({row}) > td:nth-child(5)').text
-    save_td_data["habitantes_por_municipio"] = tr_table_states_and_cities.find_element(By.TAG_NAME,
-                                                                      f'#mw-content-text > div.mw-parser-output > table:nth-child(11) > tbody > tr:nth-child({row}) > td:nth-child(6)').text
+    save_td_data["regiao"] = tr_table_states_and_cities.find_element(By.XPATH,
+                                                                      f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[3]').text
+    save_td_data["habitantes_por_estado"] = tr_table_states_and_cities.find_element(By.XPATH,
+                                                                      f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[5]').text
+    save_td_data["habitantes_por_municipio"] = tr_table_states_and_cities.find_element(By.XPATH,
+                                                                      f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[6]').text
 
-    total_cities = tr_table_states_and_cities.find_element(By.TAG_NAME,
-                                            f'#mw-content-text > div.mw-parser-output > table:nth-child(11) > tbody > tr:nth-child({row}) > td:nth-child(4)').text
+    total_cities = tr_table_states_and_cities.find_element(By.XPATH,
+                                            f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[4]').text
 
-    tr_table_states_and_cities.find_element(By.TAG_NAME,
-                                            f'#mw-content-text > div.mw-parser-output > table:nth-child(11) > tbody > tr:nth-child({row}) > td:nth-child(4)').click()
+    tr_table_states_and_cities.find_element(By.XPATH,
+                                            f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[4]').click()
 
     citie = {
         "name": "",
         "cod_ibge": ""
     }
 
-    table_cities = driver.find_element(By.CSS_SELECTOR, '#mw-content-text > div.mw-parser-output > table.wikitable.sortable.jquery-tablesorter > tbody')
-    for row_table_cities in range(int(total_cities)):
-        sleep(2)
-        tr_table_cities = table_cities.find_element(By.CSS_SELECTOR, f'#mw-content-text > div.mw-parser-output > table.wikitable.sortable.jquery-tablesorter > tbody > tr:nth-child({row_table_cities+1})')
+    # sleep(1)
+    try:
+        table_cities = driver.find_element(By.XPATH, '/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[2]/tbody')
+        for row_table_cities in range(int(total_cities)):
+            if row_table_cities < 27:
+                tr_table_cities = table_cities.find_element(By.XPATH,
+                                                            f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[2]/tbody/tr[{row_table_cities + 1}]')
 
-        citie['name'] = tr_table_cities.find_element(By.CSS_SELECTOR,
-                                     f'#mw-content-text > div.mw-parser-output > table.wikitable.sortable.jquery-tablesorter > tbody > tr:nth-child({row_table_cities+1}) > td:nth-child(2)').text
-        citie['cod_ibge'] = tr_table_cities.find_element(By.CSS_SELECTOR,
-                                     f'#mw-content-text > div.mw-parser-output > table.wikitable.sortable.jquery-tablesorter > tbody > tr:nth-child({row_table_cities+1}) > td:nth-child(3)').text
+                citie['name'] = tr_table_cities.find_element(By.XPATH,
+                                                             f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[2]/tbody/tr[{row_table_cities + 1}]/td[2]').text
+                citie['cod_ibge'] = tr_table_cities.find_element(By.XPATH,
+                                                                 f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[2]/tbody/tr[{row_table_cities + 1}]/td[3]').text
 
-        save_td_data["municipios"].append(citie)
+                save_td_data["municipios"].append(citie)
+    except:
+        table_cities = driver.find_element(By.XPATH, '/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody')
+        for row_table_cities in range(int(total_cities)):
+            if row_table_cities < 27:
+                tr_table_cities = table_cities.find_element(By.XPATH,
+                                                            f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody/tr[{row_table_cities + 1}]')
+
+                citie['name'] = tr_table_cities.find_element(By.XPATH,
+                                                             f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody/tr[{row_table_cities + 1}]/td[2]').text
+                citie['cod_ibge'] = tr_table_cities.find_element(By.XPATH,
+                                                                 f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody/tr[{row_table_cities + 1}]/td[3]').text
+
+                save_td_data["municipios"].append(citie)
 
     driver.back()
-    sleep(2)
-
-
     table_row_states_and_cities.append(save_td_data)
+    # sleep(1)
 
 
 print(table_row_states_and_cities)
