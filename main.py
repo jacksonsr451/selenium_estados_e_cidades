@@ -6,7 +6,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 options = webdriver.ChromeOptions()
 
-# options.add_argument("--headless")
+options.add_argument("--headless")
 
 driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), chrome_options=options)
 
@@ -41,10 +41,12 @@ for element in table_row_states_with_sigle:
 # list states and cities by wikipedia
 driver.get(url=url_states_and_cities)
 table_row_states_and_cities: [] = list()
+table_of_states_and_cities = driver.find_element(By.XPATH, '//*[@id="mw-content-text"]/div[1]/table[3]/tbody')
 
-for row in range(1, 26):
-    table_of_states_and_cities = driver.find_element(By.XPATH, '//*[@id="mw-content-text"]/div[1]/table[3]/tbody')
-
+count: int = 0
+for row in range(1, 27):
+    print(row)
+    count += 1
     tr_table_states_and_cities = table_of_states_and_cities.find_element(By.XPATH,
                                             f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]')
     save_td_data: {} = {
@@ -82,11 +84,10 @@ for row in range(1, 26):
         "cod_ibge": ""
     }
 
-    # sleep(1)
     try:
         table_cities = driver.find_element(By.XPATH, '/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[2]/tbody')
         for row_table_cities in range(int(total_cities)):
-            if row_table_cities < 27:
+            if row_table_cities < 26:
                 tr_table_cities = table_cities.find_element(By.XPATH,
                                                             f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[2]/tbody/tr[{row_table_cities + 1}]')
 
@@ -95,11 +96,11 @@ for row in range(1, 26):
                 citie['cod_ibge'] = tr_table_cities.find_element(By.XPATH,
                                                                  f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[2]/tbody/tr[{row_table_cities + 1}]/td[3]').text
 
-                save_td_data["municipios"].append(citie)
+            save_td_data["municipios"].append(citie)
     except:
         table_cities = driver.find_element(By.XPATH, '/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody')
         for row_table_cities in range(int(total_cities)):
-            if row_table_cities < 27:
+            if row_table_cities < 26:
                 tr_table_cities = table_cities.find_element(By.XPATH,
                                                             f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody/tr[{row_table_cities + 1}]')
 
@@ -108,14 +109,20 @@ for row in range(1, 26):
                 citie['cod_ibge'] = tr_table_cities.find_element(By.XPATH,
                                                                  f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody/tr[{row_table_cities + 1}]/td[3]').text
 
-                save_td_data["municipios"].append(citie)
+            save_td_data["municipios"].append(citie)
 
-    driver.back()
     table_row_states_and_cities.append(save_td_data)
-    # sleep(1)
 
+    if count <= 26:
+        print(count)
+        driver.back()
+        driver.get(url=url_states_and_cities)
+        sleep(2)
+        table_of_states_and_cities = driver.find_element(By.XPATH, '//*[@id="mw-content-text"]/div[1]/table[3]/tbody')
+    else:
+        print(count)
+driver.close()
 
 print(table_row_states_and_cities)
 
-driver.close()
 
