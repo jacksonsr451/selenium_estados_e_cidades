@@ -45,10 +45,7 @@ table_of_states_and_cities = driver.find_element(By.XPATH, '//*[@id="mw-content-
 
 count: int = 0
 for row in range(1, 27):
-    print(row)
-    count += 1
-    tr_table_states_and_cities = table_of_states_and_cities.find_element(By.XPATH,
-                                            f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]')
+    #Bloco que pega o valor de cada estado na tabela
     save_td_data: {} = {
         "posicao": "",
         "estado": "",
@@ -58,71 +55,110 @@ for row in range(1, 27):
         "habitantes_por_estado": "",
         "habitantes_por_municipio": ""
     }
-    save_td_data["posicao"] = tr_table_states_and_cities.find_element(By.XPATH,
-                                                                      f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[1]').text
-    save_td_data["estado"] = tr_table_states_and_cities.find_element(By.XPATH,
-                                                                      f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[2]').text
-    for item in list_of_states_names:
-        if save_td_data['estado'].__contains__(item['estado']):
-            save_td_data['sigla'] = item['sigla']
+    total_cities = 0
+    try:
+        tr_table_states_and_cities = table_of_states_and_cities.find_element(By.XPATH,
+                                                                             f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]')
 
-    save_td_data["regiao"] = tr_table_states_and_cities.find_element(By.XPATH,
-                                                                      f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[3]').text
-    save_td_data["habitantes_por_estado"] = tr_table_states_and_cities.find_element(By.XPATH,
-                                                                      f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[5]').text
-    save_td_data["habitantes_por_municipio"] = tr_table_states_and_cities.find_element(By.XPATH,
-                                                                      f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[6]').text
+        save_td_data["posicao"] = tr_table_states_and_cities.find_element(By.XPATH,
+                                                                          f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[1]').text
+        save_td_data["estado"] = tr_table_states_and_cities.find_element(By.XPATH,
+                                                                         f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[2]').text
+        for item in list_of_states_names:
+            if save_td_data['estado'].__contains__(item['estado']):
+                save_td_data['sigla'] = item['sigla']
 
-    total_cities = tr_table_states_and_cities.find_element(By.XPATH,
-                                            f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[4]').text
+        save_td_data["regiao"] = tr_table_states_and_cities.find_element(By.XPATH,
+                                                                         f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[3]').text
+        save_td_data["habitantes_por_estado"] = tr_table_states_and_cities.find_element(By.XPATH,
+                                                                                        f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[5]').text
+        save_td_data["habitantes_por_municipio"] = tr_table_states_and_cities.find_element(By.XPATH,
+                                                                                           f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[6]').text
 
-    tr_table_states_and_cities.find_element(By.XPATH,
-                                            f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[4]').click()
+        total_cities = tr_table_states_and_cities.find_element(By.XPATH,
+                                                               f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[4]').text
 
-    citie = {
-        "name": "",
-        "cod_ibge": ""
-    }
+        tr_table_states_and_cities.find_element(By.XPATH,
+                                                f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[4]').click()
+    except Exception as error:
+        print(error)
 
+    # Bloco para pegar as cidades que pertencem ao estado
     try:
         table_cities = driver.find_element(By.XPATH, '/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[2]/tbody')
-        for row_table_cities in range(int(total_cities)):
-            if row_table_cities < 26:
-                tr_table_cities = table_cities.find_element(By.XPATH,
-                                                            f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[2]/tbody/tr[{row_table_cities + 1}]')
+        for row_table_cities in range(1, int(total_cities)):
+            citie = {
+                "name": "",
+                "cod_ibge": ""
+            }
+            tr_table_cities = table_cities.find_element(By.XPATH,
+                                                        f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[2]/tbody/tr[{row_table_cities}]')
 
-                citie['name'] = tr_table_cities.find_element(By.XPATH,
-                                                             f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[2]/tbody/tr[{row_table_cities + 1}]/td[2]').text
-                citie['cod_ibge'] = tr_table_cities.find_element(By.XPATH,
-                                                                 f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[2]/tbody/tr[{row_table_cities + 1}]/td[3]').text
+            citie['name'] = tr_table_cities.find_element(By.XPATH,
+                                                         f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[2]/tbody/tr[{row_table_cities}]/td[2]').text
+            citie['cod_ibge'] = tr_table_cities.find_element(By.XPATH,
+                                                             f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[2]/tbody/tr[{row_table_cities}]/td[3]').text
 
             save_td_data["municipios"].append(citie)
     except:
-        table_cities = driver.find_element(By.XPATH, '/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody')
-        for row_table_cities in range(int(total_cities)):
-            if row_table_cities < 26:
-                tr_table_cities = table_cities.find_element(By.XPATH,
-                                                            f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody/tr[{row_table_cities + 1}]')
+        pass
+    try:
+        for row_table_cities in range(1, int(total_cities)):
+            citie = {
+                "name": "",
+                "cod_ibge": ""
+            }
+            table_cities = driver.find_element(By.XPATH,
+                                               '/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody')
 
+            tr_table_cities = table_cities.find_element(By.XPATH,
+                                                        f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody/tr[{row_table_cities}]')
+
+            if row_table_cities == 23:
                 citie['name'] = tr_table_cities.find_element(By.XPATH,
-                                                             f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody/tr[{row_table_cities + 1}]/td[2]').text
+                                                             f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody/tr[{row_table_cities}]/td[2]').text
                 citie['cod_ibge'] = tr_table_cities.find_element(By.XPATH,
-                                                                 f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody/tr[{row_table_cities + 1}]/td[3]').text
+                                                                 f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody/tr[{row_table_cities}]/td[4]').text
+            else:
+                citie['name'] = tr_table_cities.find_element(By.XPATH,
+                                                             f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody/tr[{row_table_cities}]/td[2]').text
+                citie['cod_ibge'] = tr_table_cities.find_element(By.XPATH,
+                                                             f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody/tr[{row_table_cities}]/td[3]').text
 
             save_td_data["municipios"].append(citie)
+    except Exception as error:
+        pass
+    try:
+        for row_table_cities in range(1, int(total_cities)):
+            citie = {
+                "name": "",
+                "cod_ibge": ""
+            }
+            table_cities = driver.find_element(By.XPATH,
+                                               '/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[1]/tbody')
 
+            tr_table_cities = table_cities.find_element(By.XPATH,
+                                                        f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[1]/tbody/tr[{row_table_cities}]')
+
+            citie['name'] = tr_table_cities.find_element(By.XPATH,
+                                                         f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[1]/tbody/tr[{row_table_cities}]/td[2]').text
+            citie['cod_ibge'] = tr_table_cities.find_element(By.XPATH,
+                                                             f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[1]/tbody/tr[{row_table_cities}]/td[3]').text
+
+            save_td_data["municipios"].append(citie)
+    except Exception as error:
+        pass
+
+    #Adciona dados em table_row_states_and_cities
     table_row_states_and_cities.append(save_td_data)
 
-    if count <= 26:
-        print(count)
+    # Se for menor que 27 então prepara para voltar e pegar novos valores
+    if count < 27:
         driver.back()
         driver.get(url=url_states_and_cities)
-        sleep(2)
+        print(save_td_data["posicao"], save_td_data["sigla"], save_td_data["estado"], save_td_data['municipios'])
         table_of_states_and_cities = driver.find_element(By.XPATH, '//*[@id="mw-content-text"]/div[1]/table[3]/tbody')
-    else:
-        print(count)
+
 driver.close()
 
-print(table_row_states_and_cities)
-
-
+# print(table_row_states_and_cities)
