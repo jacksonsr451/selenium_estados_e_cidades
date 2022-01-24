@@ -1,5 +1,3 @@
-from time import sleep
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
@@ -26,13 +24,17 @@ for row in range(1, 29):
 
 row = 1
 for element in table_row_states_with_sigle:
-    state: {} = {
-        "estado": "",
-        "sigla": ""
-    }
     if row > 1:
-        state['estado'] = element.find_element(By.CSS_SELECTOR,
+        state: {} = {
+            "estado": "",
+            "sigla": ""
+        }
+        estado = element.find_element(By.CSS_SELECTOR,
                                                f'body > div.site > div.conteudo > table > tbody > tr:nth-child({row}) > td:nth-child(2)').text
+        if estado == 'Ceara':
+            state['estado'] = 'Ceará'
+        else:
+            state['estado'] = estado
         state['sigla'] = element.find_element(By.CSS_SELECTOR,
                                                f'body > div.site > div.conteudo > table > tbody > tr:nth-child({row}) > td:nth-child(1)').text
         list_of_states_names.append(state)
