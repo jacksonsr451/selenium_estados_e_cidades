@@ -1,3 +1,5 @@
+import json
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
@@ -158,9 +160,12 @@ for row in range(1, 27):
     if count < 27:
         driver.back()
         driver.get(url=url_states_and_cities)
-        print(save_td_data["posicao"], save_td_data["sigla"], save_td_data["estado"], save_td_data['municipios'])
+
+        with open(f'files_jason_{save_td_data["estado"]}.json', 'w') as f:
+            json.dump({"estado": save_td_data["estado"], "posição": save_td_data["posicao"],
+                        "sigla": save_td_data["sigla"], "municipios": save_td_data['municipios']}, f, ensure_ascii=False, indent=4)
+
         table_of_states_and_cities = driver.find_element(By.XPATH, '//*[@id="mw-content-text"]/div[1]/table[3]/tbody')
 
 driver.close()
 
-# print(table_row_states_and_cities)
