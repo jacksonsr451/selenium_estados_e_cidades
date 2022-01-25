@@ -12,6 +12,6 @@ por todas as linhas em uma tabela, filtra e captura todos os dados,
 posteriormente buscando em links relacionados aos municípios de cada estado
 e coleta cada um os colocando em uma lista.
 
-Após a coleta de todos os dados, o script monta em uma pasta especifica
-states_files_json, cada estado em um .json com suas cidades contidas em uma 
+Após a coleta de todos os dados, o script, em uma pasta especifica
+states_files_json, monta para cada estado em um .json com suas cidades contidas em uma 
 lista!
