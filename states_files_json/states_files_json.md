@@ -1,0 +1,1 @@
+Pasta que ira contem todos os arquivos json.
