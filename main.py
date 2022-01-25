@@ -57,7 +57,7 @@ for row in range(1, 27):
         "estado": "",
         "sigla": "",
         "regiao": "",
-        "municipios": {},
+        "municipios": [],
         "habitantes_por_estado": "",
         "habitantes_por_municipio": ""
     }
@@ -105,7 +105,7 @@ for row in range(1, 27):
             citie['cod_ibge'] = tr_table_cities.find_element(By.XPATH,
                                                              f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[2]/tbody/tr[{row_table_cities}]/td[3]').text
 
-            save_td_data["municipios"].join(citie)
+            save_td_data["municipios"].append(citie)
     except:
         pass
     try:
@@ -131,7 +131,7 @@ for row in range(1, 27):
                 citie['cod_ibge'] = tr_table_cities.find_element(By.XPATH,
                                                              f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody/tr[{row_table_cities}]/td[3]').text
 
-            save_td_data["municipios"].join(citie)
+            save_td_data["municipios"].append(citie)
     except Exception as error:
         pass
     try:
@@ -151,7 +151,7 @@ for row in range(1, 27):
             citie['cod_ibge'] = tr_table_cities.find_element(By.XPATH,
                                                              f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[1]/tbody/tr[{row_table_cities}]/td[3]').text
 
-            save_td_data["municipios"].join(citie)
+            save_td_data["municipios"].append(citie)
     except Exception as error:
         pass
 
@@ -164,7 +164,7 @@ for row in range(1, 27):
         driver.get(url=url_states_and_cities)
 
         # Ciando arquivos .json
-        with open(f'cities_by{"".join(re.sub(r" ", "_", save_td_data["estado"].lower()))}.json', 'w', encoding="utf-8") as f:
+        with open(f'states_files_json/cities_by{"".join(re.sub(r" ", "_", save_td_data["estado"].lower()))}.json', 'w', encoding="utf-8") as f:
             json.dump({"estado": save_td_data["estado"], "posição": save_td_data["posicao"],
                         "sigla": save_td_data["sigla"], "municipios": save_td_data['municipios']}, f, ensure_ascii=False, indent=4)
 
