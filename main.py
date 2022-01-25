@@ -60,7 +60,6 @@ for row in range(1, 27):
     try:
         tr_table_states_and_cities = table_of_states_and_cities.find_element(By.XPATH,
                                                                              f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]')
-
         save_td_data["posicao"] = tr_table_states_and_cities.find_element(By.XPATH,
                                                                           f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table[3]/tbody/tr[{row}]/td[1]').text
         save_td_data["estado"] = tr_table_states_and_cities.find_element(By.XPATH,
