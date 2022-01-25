@@ -1,3 +1,6 @@
+import json
+import re
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
@@ -20,6 +23,7 @@ table_row_states_with_sigle: [] = list()
 list_of_states_names: [] = list()
 
 for row in range(1, 29):
+    # refatorar
     table_row_states_with_sigle.append(table_states_by_sigle.find_element(By.CSS_SELECTOR, f'body > div.site > div.conteudo > table > tbody > tr:nth-child({row})'))
 
 row = 1
@@ -152,15 +156,19 @@ for row in range(1, 27):
         pass
 
     #Adciona dados em table_row_states_and_cities
-    table_row_states_and_cities.append(save_td_data)
+    # table_row_states_and_cities.append(save_td_data)
 
     # Se for menor que 27 então prepara para voltar e pegar novos valores
     if count < 27:
         driver.back()
         driver.get(url=url_states_and_cities)
-        print(save_td_data["posicao"], save_td_data["sigla"], save_td_data["estado"], save_td_data['municipios'])
+
+        # Ciando arquivos .json
+        with open(f'states_files_json/cities_by{"".join(re.sub(r" ", "_", save_td_data["estado"].lower()))}.json', 'w', encoding="utf-8") as f:
+            json.dump({"estado": save_td_data["estado"], "posição": save_td_data["posicao"],
+                        "sigla": save_td_data["sigla"], "municipios": save_td_data['municipios']}, f, ensure_ascii=False, indent=4)
+
         table_of_states_and_cities = driver.find_element(By.XPATH, '//*[@id="mw-content-text"]/div[1]/table[3]/tbody')
 
 driver.close()
 
-# print(table_row_states_and_cities)
