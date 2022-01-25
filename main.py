@@ -22,31 +22,26 @@ table_row_states_with_sigle: [] = list()
 
 list_of_states_names: [] = list()
 
-for row in range(1, 29):
-    # refatorar
-    table_row_states_with_sigle.append(table_states_by_sigle.find_element(By.CSS_SELECTOR, f'body > div.site > div.conteudo > table > tbody > tr:nth-child({row})'))
+for row in range(2, 28):
+    element = table_states_by_sigle.find_element(By.CSS_SELECTOR, f'body > div.site > div.conteudo > table > tbody > tr:nth-child({row})')
+    state: {} = {
+        "estado": "",
+        "sigla": ""
+    }
+    estado = element.find_element(By.CSS_SELECTOR,
+                                           f'body > div.site > div.conteudo > table > tbody > tr:nth-child({row}) > td:nth-child(2)').text
+    if estado == 'Ceara':
+        state['estado'] = 'Ceará'
+    else:
+        state['estado'] = estado
+    state['sigla'] = element.find_element(By.CSS_SELECTOR,
+                                           f'body > div.site > div.conteudo > table > tbody > tr:nth-child({row}) > td:nth-child(1)').text
+    list_of_states_names.append(state)
+    print(state)
 
-row = 1
-for element in table_row_states_with_sigle:
-    if row > 1:
-        state: {} = {
-            "estado": "",
-            "sigla": ""
-        }
-        estado = element.find_element(By.CSS_SELECTOR,
-                                               f'body > div.site > div.conteudo > table > tbody > tr:nth-child({row}) > td:nth-child(2)').text
-        if estado == 'Ceara':
-            state['estado'] = 'Ceará'
-        else:
-            state['estado'] = estado
-        state['sigla'] = element.find_element(By.CSS_SELECTOR,
-                                               f'body > div.site > div.conteudo > table > tbody > tr:nth-child({row}) > td:nth-child(1)').text
-        list_of_states_names.append(state)
-    row += 1
 
 # list states and cities by wikipedia
 driver.get(url=url_states_and_cities)
-table_row_states_and_cities: [] = list()
 table_of_states_and_cities = driver.find_element(By.XPATH, '//*[@id="mw-content-text"]/div[1]/table[3]/tbody')
 
 count: int = 0
@@ -154,9 +149,6 @@ for row in range(1, 27):
             save_td_data["municipios"].append(citie)
     except Exception as error:
         pass
-
-    #Adciona dados em table_row_states_and_cities
-    # table_row_states_and_cities.append(save_td_data)
 
     # Se for menor que 27 então prepara para voltar e pegar novos valores
     if count < 27:
