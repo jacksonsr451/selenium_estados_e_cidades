@@ -1,6 +1,6 @@
-#Script simples utilizando Python e selenium.
+# Script simples utilizando Python e selenium.
 
-##O objetivo bem simples:
+## O objetivo bem simples:
 Primeiro era de ir em algumas URLs expecificas e filtrar is dados 
 de estado junto com a sigla, claro que poderia terfacilitado montando um 
 dicionario contendo estes primeiros dados.
