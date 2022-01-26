@@ -153,9 +153,16 @@ for row in range(1, 27):
         driver.back()
         driver.get(url=url_states_and_cities)
 
+        name_file_state = "".join((re.sub("á", "a", save_td_data["estado"].lower())))
+        name_file_state = "".join((re.sub(" ", "_", name_file_state)))
+        name_file_state = "".join((re.sub("ã", "a", name_file_state)))
+        name_file_state = "".join((re.sub("í", "i", name_file_state)))
+        name_file_state = "".join((re.sub("ô", "o", name_file_state)))
+
+        name_state = save_td_data['estado'].lstrip()
         # Ciando arquivos .json
-        with open(f'states_files_json/cities_by{"".join(re.sub(r" ", "_", save_td_data["estado"].lower()))}.json', 'w', encoding="utf-8") as f:
-            json.dump({"estado": save_td_data["estado"], "posição": save_td_data["posicao"],
+        with open(f'states_files_json/cities_by{name_file_state}.json', 'w', encoding="utf-8") as f:
+            json.dump({"estado": name_state, "posição": save_td_data["posicao"],
                         "sigla": save_td_data["sigla"], "municipios": save_td_data['municipios']}, f, ensure_ascii=False, indent=4)
 
         table_of_states_and_cities = driver.find_element(By.XPATH, '//*[@id="mw-content-text"]/div[1]/table[3]/tbody')
