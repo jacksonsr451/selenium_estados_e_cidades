@@ -37,7 +37,6 @@ for row in range(2, 28):
     state['sigla'] = element.find_element(By.CSS_SELECTOR,
                                            f'body > div.site > div.conteudo > table > tbody > tr:nth-child({row}) > td:nth-child(1)').text
     list_of_states_names.append(state)
-    print(state)
 
 
 # list states and cities by wikipedia
@@ -161,5 +160,24 @@ for row in range(1, 27):
 
         table_of_states_and_cities = driver.find_element(By.XPATH, '//*[@id="mw-content-text"]/div[1]/table[3]/tbody')
 
-driver.close()
+driver.get('https://pt.wikipedia.org/wiki/Lista_de_regi%C3%B5es_administrativas_do_Distrito_Federal_por_popula%C3%A7%C3%A3o')
 
+district_fd = driver.find_element(By.XPATH, '/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody')
+
+df_brasilia = {
+        "df": "Brasilia",
+        "municipios": []
+    }
+for row in range(1, 33):
+    district_fd_tr = driver.find_element(By.XPATH, '/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody/tr[1]')
+
+    pos_city_of_df = district_fd.find_element(By.XPATH,
+                                          f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody/tr[{row}]/td[1]').text
+    name_city_of_df = district_fd.find_element(By.XPATH,
+                                          f'/html/body/div/div/div[1]/div[2]/main/div[2]/div[3]/div[1]/table/tbody/tr[{row}]/td[2]').text
+    df_brasilia['municipios'].append({"posição": pos_city_of_df, "name": name_city_of_df})
+
+with open(f'states_files_json/cities_by_{"".join(re.sub(r" ", "_", df_brasilia["df"].lower()))}.json', 'w', encoding="utf-8") as f:
+    json.dump({"df": df_brasilia['df'], "sigla": "DF", "municipios": df_brasilia['municipios']}, f, ensure_ascii=False, indent=4)
+
+driver.close()
